@@ -9,21 +9,22 @@ import { test } from "./tests"
 import { Product, Shop } from "./models"
 
 class ShopImpl implements Shop {
-  shopProducts = new Array<Product>()
+   shopProducts = new Map<string, Product>()
+
 
   addNewProduct(product: Product): boolean {
-    if (this.shopProducts.find((e) => e.id === product.id)) {
+    if (this.shopProducts.has(product.id)) {
       return false
     } else {
-      this.shopProducts.push(product)
-      this.shopProducts = this.shopProducts.sort((a, b) => Number(a.id) - Number(b.id))
+      this.shopProducts.set(product.id, product)
+      this.shopProducts = new Map([...this.shopProducts.entries()].sort())
       return true
     }
   }
 
   deleteProduct(id: string): boolean {
-    if (this.shopProducts.find((e) => e.id === id)) {
-      this.shopProducts = this.shopProducts.filter((e) => e.id !== id)
+    if (this.shopProducts.has(id)) {
+      this.shopProducts.delete(id)
       return true
     } else {
       return false
@@ -31,26 +32,43 @@ class ShopImpl implements Shop {
   }
 
   listProductsByName(searchString: string): string[] {
-    let products: Product[] = this.shopProducts
-      .filter((e) => e.name.includes(searchString))
-      .slice(-10)
+    let list = new Map<string, Product[]>()
 
-    let list: string[] = products.map((e) =>
-      products.filter((el) => el.name === e.name).length > 1
-        ? `${e.producer} - ${e.name}`
-        : e.name,
-    )
+    for (let item of this.shopProducts.values()) {
+      if (item.name.includes(searchString)) {
+        const products = list.get(item.name)
 
-    return list
+        if (products) {
+          list.set(item.name, [item, ...products])
+        } else {
+          list.set(item.name, [item])
+        }
+      }
+    }
+
+    let res: string[] = []
+
+    for (let products of list.values()) {
+      if (products.length > 1) {
+        res.push(...products.map((e) => `${e.producer} - ${e.name}`))
+      } else {
+        res.push(...products.map((e) => e.name))
+      }
+    }
+
+    return res.slice(-10)
   }
 
   listProductsByProducer(searchString: string): string[] {
-    const list: string[] = this.shopProducts
-      .filter((e) => e.producer.includes(searchString))
-      .slice(-10)
-      .map((e) => e.name)
+    let list: string[] = []
 
-    return list
+    for (let product of this.shopProducts.values()) {
+      if (product.producer.includes(searchString)) {
+        list.push(product.name)
+      }
+    }
+
+    return list.slice(-10)
   }
 }
 

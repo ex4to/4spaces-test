@@ -123,6 +123,7 @@ export const test4 = (shop: Shop) => {
   console.log("Test 4: Start")
 
   let byNames: string[] = shop.listProductsByName("Product")
+  
   assert(byNames.length === 10)
 
   console.log("Test 4: Completed")
