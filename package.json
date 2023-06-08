@@ -1,0 +1,15 @@
+{
+  "name": "4space-interview",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "tsc --build && node --experimental-specifier-resolution=node dist/index.js"
+  },
+  "author": "desolaye",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^5.1.3"
+  }
+}
