@@ -9,15 +9,13 @@ import { test } from "./tests"
 import { Product, Shop } from "./models"
 
 class ShopImpl implements Shop {
-   shopProducts = new Map<string, Product>()
-
+  shopProducts = new Map<string, Product>()
 
   addNewProduct(product: Product): boolean {
     if (this.shopProducts.has(product.id)) {
       return false
     } else {
       this.shopProducts.set(product.id, product)
-      this.shopProducts = new Map([...this.shopProducts.entries()].sort())
       return true
     }
   }
@@ -56,19 +54,22 @@ class ShopImpl implements Shop {
       }
     }
 
-    return res.slice(-10)
+    return res.slice(0, 10)
   }
 
   listProductsByProducer(searchString: string): string[] {
-    let list: string[] = []
+    let list: Product[] = []
 
     for (let product of this.shopProducts.values()) {
       if (product.producer.includes(searchString)) {
-        list.push(product.name)
+        list.push(product)
       }
     }
 
-    return list.slice(-10)
+    return list
+      .sort((a, b) => Number(a.id) - Number(b.id))
+      .slice(0, 10)
+      .map((e) => e.name)
   }
 }
 

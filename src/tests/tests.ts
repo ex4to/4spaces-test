@@ -123,7 +123,7 @@ export const test4 = (shop: Shop) => {
   console.log("Test 4: Start")
 
   let byNames: string[] = shop.listProductsByName("Product")
-  
+
   assert(byNames.length === 10)
 
   console.log("Test 4: Completed")
@@ -157,7 +157,8 @@ export const test7 = (shop: Shop) => {
   console.log("Test 7: Start")
 
   let byProducer = shop.listProductsByProducer("Some Producer")
-  
+  console.log(byProducer)
+
   assert(byProducer.length == 4)
   assert(byProducer[0] == "Some Product1")
   assert(byProducer[1] == "Some Product2" || byProducer[1] == "Some Product3")
